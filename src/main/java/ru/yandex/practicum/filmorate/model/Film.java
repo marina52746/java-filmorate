@@ -21,4 +21,5 @@ public class Film {
     private int duration;
 
     public static int filmsCount = 0;
+    
 }

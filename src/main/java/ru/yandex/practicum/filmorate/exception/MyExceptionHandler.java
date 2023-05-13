@@ -22,7 +22,7 @@ public class MyExceptionHandler {
         List<String> errors = ex.getBindingResult().getFieldErrors()
                     .stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
         log.error(getErrorsMap(errors).toString());
-        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.valueOf(500));
     }
 
     @ExceptionHandler({ValidationException.class})
@@ -30,7 +30,7 @@ public class MyExceptionHandler {
         log.error(ex.getMessage());
         List<String> err = new ArrayList<>();
         err.add(ex.getMessage());
-        return new ResponseEntity<>(getErrorsMap(err), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(getErrorsMap(err), new HttpHeaders(), HttpStatus.valueOf(500));
     }
 
     private Map<String, List<String>> getErrorsMap(List<String> errors) {

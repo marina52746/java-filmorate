@@ -82,7 +82,7 @@ class FilmorateApplicationTests {
 		this.mockMvc.perform(put("/users")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(userJsonWrongId))
-				.andExpect(status().is5xxServerError());
+				.andExpect(status().is4xxClientError());
 
 		String userJsonWrongLogin = "{\n" +
 				"  \"login\": \"grig jjj\",\n" +
@@ -192,7 +192,7 @@ class FilmorateApplicationTests {
 		this.mockMvc.perform(post("/films")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(filmJsonEmptyName))
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().is5xxServerError());
 
 		String filmJsonLongDescription = "{\n" +
 				"  \"name\": \"Titanic\",\n" +

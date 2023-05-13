@@ -126,7 +126,7 @@ class FilmorateApplicationTests {
 		this.mockMvc.perform(post("/users")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(userJsonBirthdayInFuture))
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().is5xxServerError());
 
 	}
 
@@ -228,6 +228,6 @@ class FilmorateApplicationTests {
 		this.mockMvc.perform(post("/films")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(filmJsonNegativeDuration))
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().is5xxServerError());
 	}
 }

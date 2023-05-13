@@ -6,8 +6,6 @@ import java.time.LocalDate;
 
 @Data
 public class User {
-    public static int usersCount = 0;
-
     @NotNull(message = "User id can't be null")
     private int id;
 
@@ -23,5 +21,7 @@ public class User {
 
     @PastOrPresent(message = "User date of birthday can't be in future")
     private LocalDate birthday;
+
+    public static int usersCount = 0;
 
 }

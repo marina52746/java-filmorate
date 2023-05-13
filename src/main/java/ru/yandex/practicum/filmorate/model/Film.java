@@ -6,8 +6,6 @@ import java.time.LocalDate;
 
 @Data
 public class Film {
-    public static int filmsCount = 0;
-
     private int id;
 
     @NotEmpty(message = "Film name can't be empty")
@@ -21,4 +19,6 @@ public class Film {
 
     @Positive(message = "Film duration must be positive")
     private int duration;
+
+    public static int filmsCount = 0;
 }

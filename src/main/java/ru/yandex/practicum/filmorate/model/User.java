@@ -8,7 +8,6 @@ import java.time.LocalDate;
 public class User {
     public static int usersCount = 0;
 
-    @NotNull(message = "User id can't be null")
     private int id;
 
     @NotEmpty(message = "User email can't be empty")

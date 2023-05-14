@@ -13,8 +13,8 @@ public class UserController {
     private Map<Integer, User> users = new HashMap<>();
 
     @GetMapping
-    public Collection<User> findAll() {
-        return users.values();
+    public List<User> findAll() {
+        return new ArrayList<>(users.values());
     }
 
     @PostMapping
@@ -32,6 +32,8 @@ public class UserController {
     public User update(@Valid @RequestBody User user) {
         if (!users.containsKey(user.getId()))
             throw new ValidationException("Can't update user with id = " + user.getId() + ", user doesn't exist");
+        if (user.getName() == null)
+            user.setName(user.getLogin());
         users.put(user.getId(), user);
         log.info("User updated: " + user);
         return user;

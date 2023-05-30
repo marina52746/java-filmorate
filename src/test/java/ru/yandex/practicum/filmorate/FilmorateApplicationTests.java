@@ -70,7 +70,7 @@ class FilmorateApplicationTests {
 		this.mockMvc.perform(put("/users")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(userJson1))
-						.andExpect(status().isOk());
+				.andExpect(status().isOk());
 
 		String userJsonWrongId = "{\n" +
 				"  \"id\": 1425,\n" +

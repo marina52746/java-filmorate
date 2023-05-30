@@ -20,7 +20,7 @@ public class MyExceptionHandler {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors()
-                    .stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
+                .stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
         log.error(getErrorsMap(errors).toString());
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.valueOf(500));
     }
@@ -31,6 +31,14 @@ public class MyExceptionHandler {
         List<String> err = new ArrayList<>();
         err.add(ex.getMessage());
         return new ResponseEntity<>(getErrorsMap(err), new HttpHeaders(), HttpStatus.valueOf(500));
+    }
+
+    @ExceptionHandler({NotFoundException.class})
+    public ResponseEntity<Map<String, List<String>>> handleValidationErrors(NotFoundException ex) {
+        log.error(ex.getMessage());
+        List<String> err = new ArrayList<>();
+        err.add(ex.getMessage());
+        return new ResponseEntity<>(getErrorsMap(err), new HttpHeaders(), HttpStatus.valueOf(404));
     }
 
     private Map<String, List<String>> getErrorsMap(List<String> errors) {

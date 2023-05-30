@@ -9,10 +9,12 @@ import java.util.HashSet;
 @Service
 public class UserService {
     private final UserStorage userStorage;
+
     @Autowired
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
     }
+    
     public void addFriend(int friend1Id, int friend2Id) {
         User friend1 = userStorage.getById(friend1Id);
         User friend2 = userStorage.getById(friend2Id);

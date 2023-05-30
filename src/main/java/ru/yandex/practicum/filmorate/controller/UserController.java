@@ -15,6 +15,7 @@ import java.util.*;
 public class UserController {
     private final UserStorage userStorage;
     private final UserService userService;
+
     @Autowired
     public UserController() {
         this.userStorage = new InMemoryUserStorage();

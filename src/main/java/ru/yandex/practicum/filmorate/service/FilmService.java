@@ -10,8 +10,9 @@ import java.util.stream.Collectors;
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
+
     @Autowired
-    public FilmService (FilmStorage filmStorage) {
+    public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -33,7 +34,7 @@ public class FilmService {
             .sorted((f1, f2) -> {
             int comp =  f2.filmLikedUsersIds.size() - f1.filmLikedUsersIds.size();
             return comp;
-        }) .limit(n)
+        }).limit(n)
         .collect(Collectors.toSet());
         return Set.of();
     }

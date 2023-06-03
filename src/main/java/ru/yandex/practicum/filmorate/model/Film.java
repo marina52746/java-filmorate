@@ -10,7 +10,6 @@ import java.util.Set;
 @Data
 @Component
 public class Film {
-    public static int filmsCount = 0;
 
     public Set<Integer> filmLikedUsersIds = new HashSet<>();
 

@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @Component
 public class User {
-    public static int usersCount = 0;
+
     public Set<Integer> friends = new HashSet<>();
 
     private int id;

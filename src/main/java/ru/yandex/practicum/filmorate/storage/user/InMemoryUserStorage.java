@@ -14,13 +14,15 @@ import java.util.Map;
 public class InMemoryUserStorage implements UserStorage {
     private Map<Integer, User> users = new HashMap<>();
 
+    public static int usersCount = 0;
+
     public List<User> findAll() {
         return new ArrayList<>(users.values());
     }
 
     public User create(User user) {
-        User.usersCount++;
-        user.setId(User.usersCount);
+        usersCount++;
+        user.setId(usersCount);
         if (user.getName() == null || user.getName().isBlank())
             user.setName(user.getLogin());
         users.put(user.getId(), user);

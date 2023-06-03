@@ -14,13 +14,15 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
 
+    public static int filmsCount = 0;
+
     public List<Film> findAll() {
         return new ArrayList<>(films.values());
     }
 
     public Film create(Film film) {
-        Film.filmsCount++;
-        film.setId(Film.filmsCount);
+        filmsCount++;
+        film.setId(filmsCount);
         films.put(film.getId(), film);
         log.info("Film created: " + film);
         return film;

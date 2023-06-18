@@ -1,12 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.validation.ReleaseDateValidation;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
+@Component
 public class Film {
-    public static int filmsCount = 0;
+
+    public Set<Integer> filmLikedUsersIds = new HashSet<>();
 
     private int id;
 

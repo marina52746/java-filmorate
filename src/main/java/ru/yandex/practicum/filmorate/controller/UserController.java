@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.service.UserService;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -10,32 +11,50 @@ import java.util.*;
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    private Map<Integer, User> users = new HashMap<>();
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public List<User> findAll() {
-        return new ArrayList<>(users.values());
+        return userService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public User findUser(@PathVariable("id") Integer userId) {
+        return userService.getById(userId);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable("id") Integer userId, @PathVariable("friendId") Integer userFriendId) {
+        userService.addFriend(userId, userFriendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable("id") Integer userId, @PathVariable("friendId") Integer userFriendId) {
+        userService.deleteFriend(userId, userFriendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Set<User> getFriends(@PathVariable("id") Integer userId) {
+        return userService.getFriends(userId);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Set<User> getCommonFriends(@PathVariable("id") Integer userId, @PathVariable("otherId") Integer otherId) {
+        return userService.getCommonFriends(userId, otherId);
     }
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        User.usersCount++;
-        user.setId(User.usersCount);
-        if (user.getName() == null)
-            user.setName(user.getLogin());
-        users.put(user.getId(), user);
-        log.info("User created: " + user);
-        return user;
+        return userService.create(user);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        if (!users.containsKey(user.getId()))
-            throw new ValidationException("Can't update user with id = " + user.getId() + ", user doesn't exist");
-        if (user.getName() == null)
-            user.setName(user.getLogin());
-        users.put(user.getId(), user);
-        log.info("User updated: " + user);
-        return user;
+        return userService.update(user);
     }
 }

@@ -18,8 +18,8 @@ public class MpaDbStorage implements MpaStorage {
     private final Logger log = LoggerFactory.getLogger(MpaDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
-    public MpaDbStorage(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate=jdbcTemplate;
+    public MpaDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -29,15 +29,15 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     private MpaRating makeMpa(ResultSet rs) throws SQLException {
-        int mpa_rating_id = rs.getInt("MPA_RATING_ID");
+        int mpaRatingId = rs.getInt("MPA_RATING_ID");
         String name = rs.getString("NAME");
-        return new MpaRating(mpa_rating_id, name);
+        return new MpaRating(mpaRatingId, name);
     }
 
     @Override
     public MpaRating getById(int id) {
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM MPA_RATING WHERE MPA_RATING_ID = ?", id);
-        if(genreRows.next()) {
+        if (genreRows.next()) {
             MpaRating mpa = new MpaRating(
                     genreRows.getInt("MPA_RATING_ID"),
                     genreRows.getString("NAME")

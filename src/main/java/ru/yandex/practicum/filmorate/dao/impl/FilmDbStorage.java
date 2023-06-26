@@ -170,7 +170,7 @@ public class FilmDbStorage implements FilmStorage {
                 for (int i = 0; i < genresFromStr(genresStr).length; i++) {
                     genreIds.add(genresFromStr(genresStr)[i]);
                 }
-                genres = genreIds.stream()
+                genres = genreIds.stream().distinct()
                         .map(g -> genreDbStorage.getById(g)).collect(Collectors.toList());
             }
         }

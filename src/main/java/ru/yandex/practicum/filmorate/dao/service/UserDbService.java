@@ -46,7 +46,7 @@ public class UserDbService {
         userDbStorage.getById(friend1Id);
         userDbStorage.getById(friend2Id);
         String sql = "SELECT distinct uf1.user_friend_id FROM PUBLIC.USER_FRIEND as uf1 join PUBLIC.USER_FRIEND as uf2 " +
-                "on uf1.user_friend_id = uf1.user_friend_id " +
+                "on uf1.user_friend_id = uf2.user_friend_id " +
                 "where uf1.user_id = ? and uf2.user_id = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> userDbStorage.makeUserById(rs), friend1Id, friend2Id);
     }

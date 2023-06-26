@@ -41,7 +41,7 @@ public class Film implements Serializable {
         if (genresIds.size() == 0)
             return null;
         StringBuilder str = new StringBuilder("[");
-        for(int id : genresIds) {
+        for (int id : genresIds) {
             str.append("{ \"id\": ");
             str.append(id);
             str.append("},");
@@ -54,8 +54,7 @@ public class Film implements Serializable {
     private List<Genre> genres;
 
     public Film(int id, String name, String description, LocalDate releaseDate, int duration, MpaRating mpa,
-                List<Genre> genres)
-    {
+                List<Genre> genres) {
         this.id = id;
         this.name = name;
         this.description = description;

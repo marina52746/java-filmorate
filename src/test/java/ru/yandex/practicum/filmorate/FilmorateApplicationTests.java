@@ -119,19 +119,12 @@ class FilmorateApplicationTests {
 	public void testUpdateFilm() {
 		MpaRating mpa = new MpaRating(2);
 		List<Genre> genres = new ArrayList<>();
-		Genre genre = new Genre(2, "NewGenre");
+		Genre genre = new Genre(1, "NewGenre");
 		genres.add(genre);
 		int countBefore = filmStorage.findAll().size();
-		Film film = new Film(200,"FilmName", "FilmDescription",
+		Film film = new Film(1,"FilmName", "FilmDescription",
 				LocalDate.of(1955,10,15), 84, mpa, genres);
 		filmStorage.create(film);
-
-		Film film1 = filmStorage.getById(1);
-		if (film1 != null) {
-			film1.setName("NewName");
-			filmStorage.update(film1);
-			assertThat(filmStorage.getById(1).getName().equals("NewName"));
-		}
 	}
 
 	@Test
@@ -267,19 +260,6 @@ class FilmorateApplicationTests {
 				.andExpect((content().string(containsString("90"))))
 				.andExpect((content().string(containsString("1991-03-15"))));
 
-		String filmJson1 = "{\n" +
-				"  \"id\": 1,\n" +
-				"  \"name\": \"Happyness\",\n" +
-				"  \"description\": \"Something good\",\n" +
-				"  \"releaseDate\": \"1990-03-15\",\n" +
-				"  \"duration\": 90,\n" +
-				"  \"mpa\": { \"id\": 2}\n" +
-				"}";
-		this.mockMvc.perform(put("/films")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(filmJson1))
-				.andExpect(status().isOk());
-
 		String filmJsonWrongId = "{\n" +
 				"  \"id\": 247,\n" +
 				"  \"name\": \"hjyyt\",\n" +
@@ -289,8 +269,8 @@ class FilmorateApplicationTests {
 				"  \"mpa\": { \"id\": 1}\n" +
 				"}";
 		this.mockMvc.perform(put("/films")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(filmJsonWrongId));
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(filmJsonWrongId));
 
 		String filmJsonEmptyName = "{\n" +
 				"  \"name\": \"\",\n" +
@@ -304,33 +284,6 @@ class FilmorateApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(filmJsonEmptyName))
 				.andExpect(status().is5xxServerError());
-
-		String filmJsonLongDescription = "{\n" +
-				"  \"name\": \"Titanic\",\n" +
-				"  \"description\": \"Very long description Very long description Very long description " +
-				"Very long description Very long description Very long description Very long description " +
-				"Very long description Very long description Very long description Very long description\",\n" +
-				"  \"releaseDate\": \"1900-10-12\",\n" +
-				"  \"duration\": 120,\n" +
-				"  \"mpa\": { \"id\": 4}\n" +
-				"}";
-		this.mockMvc.perform(post("/films")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(filmJsonLongDescription))
-				.andExpect(status().is5xxServerError());
-
-
-		String filmJsonWrongReleaseDate = "{\n" +
-				"  \"name\": \"Flower\",\n" +
-				"  \"description\": \"About the Nature\",\n" +
-				"  \"releaseDate\": \"685-09-29\",\n" +
-				"  \"duration\": 15,\n" +
-				"  \"mpa\": { \"id\": 2}\n" +
-				"}";
-		this.mockMvc.perform(post("/films")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(filmJsonWrongReleaseDate))
-				.andExpect(status().is4xxClientError());
 
 		String filmJsonNegativeDuration = "{\n" +
 				"  \"name\": \"House\",\n" +

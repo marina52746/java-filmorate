@@ -18,9 +18,10 @@ public class GenreDbStorage implements GenreStorage {
     private final Logger log = LoggerFactory.getLogger(GenreDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
-    public GenreDbStorage(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate=jdbcTemplate;
+    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
+
     @Override
     public List<Genre> findAll() {
         String sql = "select * from PUBLIC.GENRE";
@@ -28,15 +29,15 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     private Genre makeGenre(ResultSet rs) throws SQLException {
-        int genre_id = rs.getInt("GENRE_ID");
+        int genreId = rs.getInt("GENRE_ID");
         String name = rs.getString("NAME");
-        return new Genre(genre_id, name);
+        return new Genre(genreId, name);
     }
 
     @Override
     public Genre getById(int id) {
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM GENRE WHERE GENRE_ID = ?", id);
-        if(genreRows.next()) {
+        if (genreRows.next()) {
             Genre genre = new Genre(
                     genreRows.getInt("GENRE_ID"),
                     genreRows.getString("NAME")

@@ -185,9 +185,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
-        SqlRowSet film_id = jdbcTemplate.queryForRowSet("SELECT MAX(FILM_ID) AS ID FROM FILM");
-        if (film_id.next()) {
-            film.setId(film_id.getInt("ID") + 1);
+        SqlRowSet filmId = jdbcTemplate.queryForRowSet("SELECT MAX(FILM_ID) AS ID FROM FILM");
+        if (filmId.next()) {
+            film.setId(filmId.getInt("ID") + 1);
         }
         film.setMpaId(film.getMpa().getId());
         String sqlQuery = "insert into FILM(FILM_ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_RATING, MPA_RATING_ID) " +

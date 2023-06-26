@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.dao.impl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -13,10 +12,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Component("userDbStorage")
 @Primary
 public class UserDbStorage implements UserStorage {
-    private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
@@ -29,7 +28,7 @@ public class UserDbStorage implements UserStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs));
     }
 
-    public User makeUser(ResultSet rs) throws SQLException {
+    private User makeUser(ResultSet rs) throws SQLException {
         int id = rs.getInt("USER_ID");
         String email = rs.getString("EMAIL");
         String login = rs.getString("LOGIN");
@@ -60,6 +59,7 @@ public class UserDbStorage implements UserStorage {
                 user.getLogin(),
                 user.getName(),
                 user.getBirthday());
+        log.info("Created user name = " + user.getName() + " with id = " + user.getId());
         return user;
     }
 
@@ -76,6 +76,7 @@ public class UserDbStorage implements UserStorage {
                 user.getName(),
                 user.getBirthday(),
                 user.getId());
+        log.info("Updated user name = " + user.getName() + " with id = " + user.getId());
         return user;
     }
 

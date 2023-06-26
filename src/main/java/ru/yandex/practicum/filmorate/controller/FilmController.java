@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.yandex.practicum.filmorate.dao.service.FilmDbService;
+import ru.yandex.practicum.filmorate.dao.service.FilmLikeService;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -13,12 +13,12 @@ import java.util.*;
 @Slf4j
 public class FilmController {
     private final FilmService filmService;
-    private final FilmDbService filmDbService;
+    private final FilmLikeService filmLikeService;
 
     @Autowired
-    public FilmController(FilmService filmService, FilmDbService filmDbService) {
+    public FilmController(FilmService filmService, FilmLikeService filmLikeService) {
         this.filmService = filmService;
-        this.filmDbService = filmDbService;
+        this.filmLikeService = filmLikeService;
     }
 
     @GetMapping
@@ -32,25 +32,23 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@Valid @RequestBody String film) { //TODO ubrala valid dlia experimenta
-        return filmDbService.createFilmFromString(film);
+    public Film create(@Valid @RequestBody Film film) {
+        return filmService.create(film);
     }
 
     @PutMapping
-    public Film update(@Valid @RequestBody String film) {
-        return filmDbService.updateFilmFromString(film);
+    public Film update(@Valid @RequestBody Film film) {
+        return filmService.update(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable("id") int filmId, @PathVariable("userId") int userId) {
-        //filmService.addLike(filmId, userId);
-        filmDbService.addLike(filmId, userId);
+        filmLikeService.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable("id") int filmId, @PathVariable("userId") int userId) {
-        //filmService.deleteLike(filmId, userId);
-        filmDbService.deleteLike(filmId, userId);
+        filmLikeService.deleteLike(filmId, userId);
     }
 
     @GetMapping("/popular")

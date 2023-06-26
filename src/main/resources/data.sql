@@ -6,6 +6,14 @@ delete from genre;
 delete from film;
 delete from mpa_rating;
 
+--drop table user_friend cascade;
+--drop table user_like cascade;
+--drop table "USER" cascade;
+--drop table film_genre cascade;
+--drop table genre cascade;
+--drop table film cascade;
+--drop table mpa_rating cascade;
+
 MERGE INTO PUBLIC."MPA_RATING" (mpa_rating_id, name) KEY (MPA_RATING_ID) values ( 1, 'G');
 MERGE INTO PUBLIC."MPA_RATING" (mpa_rating_id, name) KEY (MPA_RATING_ID) values ( 2, 'PG');
 MERGE INTO PUBLIC."MPA_RATING" (mpa_rating_id, name) KEY (MPA_RATING_ID) values ( 3, 'PG-13');

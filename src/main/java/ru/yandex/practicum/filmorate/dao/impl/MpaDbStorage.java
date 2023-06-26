@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.dao.impl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -12,10 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Slf4j
 @Component("mpaDbStorage")
 @Primary
 public class MpaDbStorage implements MpaStorage {
-    private final Logger log = LoggerFactory.getLogger(MpaDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
     public MpaDbStorage(JdbcTemplate jdbcTemplate) {

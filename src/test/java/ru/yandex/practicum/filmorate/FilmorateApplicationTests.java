@@ -269,8 +269,8 @@ class FilmorateApplicationTests {
 				"  \"mpa\": { \"id\": 1}\n" +
 				"}";
 		this.mockMvc.perform(put("/films")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(filmJsonWrongId));
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(filmJsonWrongId));
 
 		String filmJsonEmptyName = "{\n" +
 				"  \"name\": \"\",\n" +

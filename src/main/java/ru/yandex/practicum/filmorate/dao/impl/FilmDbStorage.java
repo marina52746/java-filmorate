@@ -1,12 +1,10 @@
 package ru.yandex.practicum.filmorate.dao.impl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MpaRating;
@@ -20,10 +18,10 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import static java.lang.Integer.parseInt;
 
+@Slf4j
 @Component("filmDbStorage")
 @Primary
 public class FilmDbStorage implements FilmStorage {
-    private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
     private final GenreDbStorage genreDbStorage;
 
@@ -47,10 +45,12 @@ public class FilmDbStorage implements FilmStorage {
 
     public void addGenresToDb(Film film) {
         if (film.getGenres() == null) return;
+        film.setGenres(film.getGenres().stream().distinct().collect(Collectors.toList()));
         for (Genre genre : film.getGenres()) {
             String sql = "insert into FILM_GENRE (FILM_ID, GENRE_ID) values (?, ?)";
             jdbcTemplate.update(sql, film.getId(), genre.getId());
         }
+        log.info("Added genres: " + film.getGenres() + " for film " + film.getId() + " to Database");
     }
 
     public void deleteGenresFromDb(String oldGenres, int filmId) {
@@ -59,21 +59,7 @@ public class FilmDbStorage implements FilmStorage {
             String sql = "delete from FILM_GENRE where FILM_ID = ? and GENRE_ID = ?";
             jdbcTemplate.update(sql, filmId, genr[i]);
         }
-    }
-
-    public String genresToStr(int filmId) {
-        List<Integer> genresIds = new ArrayList<>(getGenresFromDb(filmId));
-        if (genresIds.size() == 0)
-            return null;
-        StringBuilder str = new StringBuilder("[");
-        for (int id : genresIds) {
-            str.append("{ \"id\": ");
-            str.append(id);
-            str.append("},");
-        }
-        String s = str.toString();
-        s = s.substring(0, s.length() - 2) + "]";
-        return s;
+        log.info("Deleted genres: " + oldGenres + " from film " + filmId + " from Database");
     }
 
     public int[] genresFromStr(String str) {
@@ -133,56 +119,6 @@ public class FilmDbStorage implements FilmStorage {
         return mpa;
     }
 
-    public Film getFilmFromString(String filmStr) {
-        int id = 0;
-        String name = null;
-        String description = null;
-        LocalDate releaseDate = null;
-        int duration = 0;
-        MpaRating mpa = null;
-        List<Genre> genres = null;
-        String[] elems = filmStr.split("\n");
-        for (String el : elems) {
-            if (el.indexOf("\"id\"") != -1 && el.indexOf("{ \"id\"") == -1) {
-                id = parseInt(el.replaceAll("\"", "")
-                        .replace(":", "").replace("id", "")
-                        .replaceAll(" ", "").replace(",",""));
-            } else if (el.indexOf("name") != -1) {
-                name = el.replaceAll("\"", "").replace("name", "")
-                        .replace(":", "").replace(",","").trim();
-            } else if (el.indexOf("releaseDate") != -1) {
-                    String s = el.replaceAll("\"", "").replace(",","")
-                            .replace("releaseDate", "").replace(":", "").trim();
-                    String[] ymd = s.split("-");
-                    releaseDate = LocalDate.of(parseInt(ymd[0]), parseInt(ymd[1]), parseInt(ymd[2]));
-            } else if (el.indexOf("description") != -1) {
-                description = el.replaceAll("\"", "").replace(",","")
-                        .replace("description", "").replace(":", "").trim();
-            } else if (el.indexOf("duration") != -1) {
-                duration = parseInt(el.replaceAll("\"", "").replace(":", "")
-                        .replace("duration", "").replaceAll(" ", "")
-                        .replace(",",""));
-            } else if (el.indexOf("mpa") != -1) {
-                mpa = mpaFromString(el.replace("mpa", ""));
-            } else if (el.indexOf("genres") != -1) {
-                String genresStr = el.replace("\"genres\":", "").trim();
-                List<Integer> genreIds = new ArrayList<>();
-                for (int i = 0; i < genresFromStr(genresStr).length; i++) {
-                    genreIds.add(genresFromStr(genresStr)[i]);
-                }
-                genres = genreIds.stream().distinct()
-                        .map(g -> genreDbStorage.getById(g)).collect(Collectors.toList());
-            }
-        }
-        if (name == null || name.isEmpty()) throw new ValidationException("Film name can't be empty");
-        if (description.length() > 200)
-            throw new ValidationException("Film description length mustn't exceed 200 symbols");
-        if (releaseDate.isBefore(LocalDate.of(1895, 12, 28)))
-            throw new ValidationException("Date must be greater or equal 1895-12-28");
-        if (duration < 0) throw new ValidationException("Film duration must be positive");
-        return new Film(id, name, description, releaseDate, duration, mpa, genres);
-    }
-
     @Override
     public Film create(Film film) {
         SqlRowSet filmId = jdbcTemplate.queryForRowSet("SELECT MAX(FILM_ID) AS ID FROM FILM");
@@ -201,6 +137,7 @@ public class FilmDbStorage implements FilmStorage {
                 mpaToString(film.getMpa()),
                 film.getMpaId());
         addGenresToDb(film);
+        log.info("Created film " + film.getName() + " with id = " + film.getId());
         return film;
     }
 
@@ -225,6 +162,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getMpaId(),
                 film.getId());
         addGenresToDb(film);
+        log.info("Updated film " + film.getName() + " with id = " + film.getId());
         return film;
     }
 

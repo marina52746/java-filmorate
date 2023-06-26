@@ -5,6 +5,7 @@ import java.util.List;
 
 @Component
 public interface UserStorage {
+
     List<User> findAll();
 
     User create(User user);

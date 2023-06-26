@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.yandex.practicum.filmorate.dao.service.UserDbService;
 import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -12,10 +13,12 @@ import java.util.*;
 @Slf4j
 public class UserController {
     private final UserService userService;
+    private final UserDbService userDbService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserDbService userDbService) {
         this.userService = userService;
+        this.userDbService = userDbService;
     }
 
     @GetMapping
@@ -30,22 +33,22 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable("id") Integer userId, @PathVariable("friendId") Integer userFriendId) {
-        userService.addFriend(userId, userFriendId);
+        userDbService.addFriend(userId, userFriendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable("id") Integer userId, @PathVariable("friendId") Integer userFriendId) {
-        userService.deleteFriend(userId, userFriendId);
+        userDbService.deleteFriend(userId, userFriendId);
     }
 
     @GetMapping("/{id}/friends")
-    public Set<User> getFriends(@PathVariable("id") Integer userId) {
-        return userService.getFriends(userId);
+    public List<User> getFriends(@PathVariable("id") Integer userId) {
+        return userDbService.getFriends(userId);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Set<User> getCommonFriends(@PathVariable("id") Integer userId, @PathVariable("otherId") Integer otherId) {
-        return userService.getCommonFriends(userId, otherId);
+    public List<User> getCommonFriends(@PathVariable("id") Integer userId, @PathVariable("otherId") Integer otherId) {
+        return userDbService.getCommonFriends(userId, otherId);
     }
 
     @PostMapping

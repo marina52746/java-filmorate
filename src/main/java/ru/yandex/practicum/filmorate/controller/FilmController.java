@@ -1,5 +1,4 @@
 package ru.yandex.practicum.filmorate.controller;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.dao.service.FilmDbService;

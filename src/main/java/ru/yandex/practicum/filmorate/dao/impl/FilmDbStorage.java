@@ -27,8 +27,8 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final GenreDbStorage genreDbStorage;
 
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreDbStorage genreDbStorage){
-        this.jdbcTemplate=jdbcTemplate;
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreDbStorage genreDbStorage) {
+        this.jdbcTemplate = jdbcTemplate;
         this.genreDbStorage = genreDbStorage;
     }
 
@@ -43,7 +43,7 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "select GENRE_ID from PUBLIC.FILM_GENRE where FILM_ID = ?";
         jdbcTemplate.query(sql, (rs, rowNum) -> arr.add(rs.getInt("GENRE_ID")), filmId);
         return arr;
-    };
+    }
 
     public void addGenresToDb(Film film) {
         if (film.getGenres() == null) return;
@@ -66,7 +66,7 @@ public class FilmDbStorage implements FilmStorage {
         if (genresIds.size() == 0)
             return null;
         StringBuilder str = new StringBuilder("[");
-        for(int id : genresIds) {
+        for (int id : genresIds) {
             str.append("{ \"id\": ");
             str.append(id);
             str.append("},");
@@ -93,13 +93,13 @@ public class FilmDbStorage implements FilmStorage {
         int id = rs.getInt("FILM_ID");
         String name = rs.getString("NAME");
         String description = rs.getString("DESCRIPTION");
-        LocalDate release_date = rs.getDate("RELEASE_DATE").toLocalDate();
+        LocalDate releaseDate = rs.getDate("RELEASE_DATE").toLocalDate();
         int duration = rs.getInt("DURATION");
-        MpaRating mpa_rating = mpaFromString(rs.getString("MPA_RATING"));
+        MpaRating mpaRating = mpaFromString(rs.getString("MPA_RATING"));
         List<Genre> genres = new ArrayList<>();
         List<Integer> genresIds = new ArrayList<>(getGenresFromDb(id));
         genres = genresIds.stream().map(g -> genreDbStorage.getById(g)).collect(Collectors.toList());
-        return new Film(id, name, description, release_date, duration, mpa_rating, genres);
+        return new Film(id, name, description, releaseDate, duration, mpaRating, genres);
     }
 
     private String mpaToString(MpaRating mpa) {
@@ -110,7 +110,7 @@ public class FilmDbStorage implements FilmStorage {
 
     private String mpaGetName(MpaRating mpa) {
         SqlRowSet mpaRow = jdbcTemplate.queryForRowSet("SELECT NAME FROM MPA_RATING WHERE MPA_RATING_ID = ?", mpa.getId());
-        if(mpaRow.next()) {
+        if (mpaRow.next()) {
             String name = mpaRow.getString("NAME");
             return name;
         }
@@ -126,7 +126,7 @@ public class FilmDbStorage implements FilmStorage {
         String[] parts = mpaString.split(",");
         int id = parseInt(parts[0]);
         mpa.setId(id);
-        if(parts.length == 2) {
+        if (parts.length == 2) {
             name = parts[1];
             mpa.setName(name);
         }
@@ -142,7 +142,7 @@ public class FilmDbStorage implements FilmStorage {
         MpaRating mpa = null;
         List<Genre> genres = null;
         String[] elems = filmStr.split("\n");
-        for(String el : elems) {
+        for (String el : elems) {
             if (el.indexOf("\"id\"") != -1 && el.indexOf("{ \"id\"") == -1) {
                 id = parseInt(el.replaceAll("\"", "")
                         .replace(":", "").replace("id", "")
@@ -167,7 +167,7 @@ public class FilmDbStorage implements FilmStorage {
             } else if (el.indexOf("genres") != -1) {
                 String genresStr = el.replace("\"genres\":", "").trim();
                 List<Integer> genreIds = new ArrayList<>();
-                for(int i = 0; i < genresFromStr(genresStr).length; i++) {
+                for (int i = 0; i < genresFromStr(genresStr).length; i++) {
                     genreIds.add(genresFromStr(genresStr)[i]);
                 }
                 genres = genreIds.stream()
@@ -186,7 +186,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film create(Film film) {
         SqlRowSet film_id = jdbcTemplate.queryForRowSet("SELECT MAX(FILM_ID) AS ID FROM FILM");
-        if(film_id.next()) {
+        if (film_id.next()) {
             film.setId(film_id.getInt("ID") + 1);
         }
         film.setMpaId(film.getMpa().getId());
@@ -231,7 +231,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film getById(int id) {
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM FILM WHERE FILM_ID = ?", id);
-        if(filmRows.next()) {
+        if (filmRows.next()) {
             Film film = new Film(
                     filmRows.getInt("FILM_ID"),
                     filmRows.getString("NAME"),

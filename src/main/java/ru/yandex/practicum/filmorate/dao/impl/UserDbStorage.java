@@ -19,7 +19,7 @@ public class UserDbStorage implements UserStorage {
     private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
     private final JdbcTemplate jdbcTemplate;
 
-    public UserDbStorage(JdbcTemplate jdbcTemplate){
+    public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -48,9 +48,9 @@ public class UserDbStorage implements UserStorage {
     public User create(User user) {
         if (user.getName() == null || user.getName().isBlank())
             user.setName(user.getLogin());
-        SqlRowSet user_id = jdbcTemplate.queryForRowSet("SELECT MAX(USER_ID) AS ID FROM \"USER\"");
-        if(user_id.next()) {
-            user.setId(user_id.getInt("ID") + 1);
+        SqlRowSet userId = jdbcTemplate.queryForRowSet("SELECT MAX(USER_ID) AS ID FROM \"USER\"");
+        if (userId.next()) {
+            user.setId(userId.getInt("ID") + 1);
         }
         String sqlQuery = "insert into \"USER\"(USER_ID, EMAIL, LOGIN, NAME, BIRTH) " +
                 "values (?, ?, ?, ?, ?)";
@@ -82,7 +82,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User getById(int userId) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM \"USER\" WHERE USER_ID = ?", userId);
-        if(userRows.next()) {
+        if (userRows.next()) {
             User user = new User(
                     userRows.getInt("USER_ID"),
                     userRows.getString("EMAIL"),

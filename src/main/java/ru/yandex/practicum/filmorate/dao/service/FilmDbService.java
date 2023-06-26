@@ -17,7 +17,7 @@ public class FilmDbService {
 
     @Autowired
     public FilmDbService(JdbcTemplate jdbcTemplate, FilmDbStorage filmDbStorage, UserDbStorage userStorage) {
-        this.jdbcTemplate=jdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
         this.filmDbStorage = filmDbStorage;
         this.userStorage = userStorage;
     }

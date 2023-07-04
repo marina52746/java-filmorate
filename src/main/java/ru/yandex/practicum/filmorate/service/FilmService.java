@@ -1,14 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
+    @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
     private final UserService userService;
 
@@ -46,14 +46,8 @@ public class FilmService {
         film.filmLikedUsersIds.remove(userId);
     }
 
-    public Set<Film> topNFilms(Integer n) {
-        if (filmStorage.findAll().size() != 0)
-            return filmStorage.findAll()
-                    .stream()
-                    .sorted((f1, f2) -> f2.filmLikedUsersIds.size() - f1.filmLikedUsersIds.size())
-                    .limit(n)
-                    .collect(Collectors.toSet());
-        return Set.of();
+    public List<Film> topNFilms(Integer n) {
+        return filmStorage.topNFilms(n);
     }
 
 }

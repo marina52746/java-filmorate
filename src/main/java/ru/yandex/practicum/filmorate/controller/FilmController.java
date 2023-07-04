@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.yandex.practicum.filmorate.dao.service.FilmLikeService;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -12,10 +13,12 @@ import java.util.*;
 @Slf4j
 public class FilmController {
     private final FilmService filmService;
+    private final FilmLikeService filmLikeService;
 
     @Autowired
-    public FilmController(FilmService filmService) {
+    public FilmController(FilmService filmService, FilmLikeService filmLikeService) {
         this.filmService = filmService;
+        this.filmLikeService = filmLikeService;
     }
 
     @GetMapping
@@ -40,16 +43,16 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable("id") int filmId, @PathVariable("userId") int userId) {
-        filmService.addLike(filmId, userId);
+        filmLikeService.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable("id") int filmId, @PathVariable("userId") int userId) {
-        filmService.deleteLike(filmId, userId);
+        filmLikeService.deleteLike(filmId, userId);
     }
 
     @GetMapping("/popular")
-    public Set<Film> getTopFilms(@RequestParam(value = "count", required = false, defaultValue = "10") Integer count) {
+    public List<Film> getTopFilms(@RequestParam(value = "count", required = false, defaultValue = "10") Integer count) {
         return filmService.topNFilms(count);
     }
 

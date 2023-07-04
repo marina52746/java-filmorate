@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.FriendStatus;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
+    @Qualifier("userDbStorage")
     private final UserStorage userStorage;
 
     @Autowired
@@ -36,8 +40,8 @@ public class UserService {
     public void addFriend(int friend1Id, int friend2Id) {
         User friend1 = userStorage.getById(friend1Id);
         User friend2 = userStorage.getById(friend2Id);
-        friend1.friends.add(friend2Id);
-        friend2.friends.add(friend1Id);
+        friend1.friends.put(friend2Id, FriendStatus.CONFIRMED);
+        friend2.friends.put(friend1Id, FriendStatus.UNCONFIRMED);
     }
 
     public void deleteFriend(int friend1Id, int friend2Id) {
@@ -50,15 +54,15 @@ public class UserService {
     public Set<User> getCommonFriends(int friend1Id, int friend2Id) {
         User friend1 = userStorage.getById(friend1Id);
         User friend2 = userStorage.getById(friend2Id);
-        return friend1.getFriends().stream()
-                .filter(f -> friend2.getFriends().contains(f))
+        return friend1.getFriends().keySet().stream()
+                .filter(f -> friend2.getFriends().keySet().contains(f))
                 .map(userStorage::getById)
                 .collect(Collectors.toSet());
     }
 
     public Set<User> getFriends(int userId) {
         User user = userStorage.getById(userId);
-        return user.getFriends().stream()
+        return user.getFriends().keySet().stream()
                 .map(userStorage::getById)
                 .collect(Collectors.toSet());
     }

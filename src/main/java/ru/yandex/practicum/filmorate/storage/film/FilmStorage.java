@@ -12,4 +12,6 @@ public interface FilmStorage {
     Film update(Film film);
 
     Film getById(int id);
+
+    List<Film> topNFilms(Integer n);
 }
